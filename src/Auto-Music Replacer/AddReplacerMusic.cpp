@@ -45,7 +45,7 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 
 		uint32_t adventureMusicId;
 
-		if (App::Property::GetUInt32(propListOld.get(),id("adventureMusicId"),adventureMusicId)) {
+		if (App::Property::GetUInt32(propListOld.get(), 0xb6878619,adventureMusicId)) {
 
 			
 			PropertyListPtr propList = new App::PropertyList();
@@ -56,7 +56,7 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 			memoryStream->SetOption(IO::MemoryStream::kOptionResizeEnabled, 1);
 			
 
-			propList->SetProperty(id("adventureMusicId"), &App::Property().SetValueUInt32(adventureMusicId));
+			propList->SetProperty(0xb6878619, &App::Property().SetValueUInt32(adventureMusicId));
 
 
 			if (propList->Write(memoryStream.get())) {

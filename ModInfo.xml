@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<mod description="Allows players to add modded music in shared adventures by proxy." displayName="Auto-Music Replacer" dllsBuild="$SPOREMOD_DLLS_BUILD" hasCustomInstaller="false" installerSystemVersion="1.0.1.2" isExperimental="$SPOREMOD_EXPERIMENTAL" unique="Auto-MusicReplacer">
+<mod description="Allows players to add alternate act music to their shared adventures." displayName="Auto-Music Replacer" dllsBuild="$SPOREMOD_DLLS_BUILD" hasCustomInstaller="false" installerSystemVersion="1.0.1.2" isExperimental="$SPOREMOD_EXPERIMENTAL" unique="Auto-MusicReplacer">
   <prerequisite>Auto-Music Replacer.dll</prerequisite>
 </mod>

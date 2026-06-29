@@ -53,8 +53,8 @@ member_detour(cScenarioPlayMode_Initialize_dtr, Simulator::cScenarioPlayMode, vo
 				if (MSclient->Read(actP, id("AMR-ReplacingMusicId"), memoryStream.get())) {
 					PropertyListPtr propList = new App::PropertyList();
 					propList->Read(memoryStream.get());
-					if (propList->HasProperty(id("adventureMusicId"))) {
-						App::Property::GetUInt32(propList.get(), id("adventureMusicId"), alternateMusicId);
+					if (propList->HasProperty(0xb6878619)) {
+						App::Property::GetUInt32(propList.get(), 0xb6878619, alternateMusicId);
 						alternateMusicIDs.emplace(i, alternateMusicId);
 					}
 				}
@@ -65,15 +65,18 @@ member_detour(cScenarioPlayMode_Initialize_dtr, Simulator::cScenarioPlayMode, vo
 
 };
 
-static_detour(AudioSystem_PlayAudio_dtr, void(uint32_t, Audio::AudioTrack)) {
+member_detour(cScenarioPlayMode_SetCurrentAct_dtr, Simulator::cScenarioPlayMode, void(int, bool)) {
+
+	void detoured(int actIndex, bool boolean) {
+		original_function(this, actIndex, boolean);
+	}
+
+};
+
+static_detour(AudioSystem_PlayActMusic_dtr, void(uint32_t, Audio::AudioTrack)) {
 
 	void detoured(uint32_t soundID, Audio::AudioTrack track) {
-		if (Simulator::GetGameModeID() == GameModeIDs::kScenarioMode
-			&& ScenarioMode.GetMode() == App::cScenarioMode::Mode::PlayMode
-			&& soundID == ScenarioMode.GetResource()->mActs[ScenarioMode.GetPlayMode()->mCurrentActIndex].mActMusicID
-			&& track == ScenarioMode.GetPlayMode()->mMusicTrack
-			&& active
-			&& alternateMusicIDs.find(ScenarioMode.GetPlayMode()->mCurrentActIndex) != alternateMusicIDs.end())
+		if (active && alternateMusicIDs.find(ScenarioMode.GetPlayMode()->mCurrentActIndex) != alternateMusicIDs.end())
 		{
 			original_function(alternateMusicIDs[ScenarioMode.GetPlayMode()->mCurrentActIndex], track);
 
@@ -99,7 +102,8 @@ void AttachDetours()
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 
 	cScenarioPlayMode_Initialize_dtr::attach(GetAddress(Simulator::cScenarioPlayMode, Initialize));
-	AudioSystem_PlayAudio_dtr::attach(GetAddress(Audio,PlayAudio));
+	cScenarioPlayMode_SetCurrentAct_dtr::attach(GetAddress(Simulator::cScenarioPlayMode, SetCurrentAct));
+	AudioSystem_PlayActMusic_dtr::attach(Address(ModAPI::ChooseAddress(0x657050,0x657200)));
 
 }
 
