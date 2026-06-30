@@ -7,6 +7,10 @@ class AddReplacerMusic
 	  Sporepedia::IShopperListener
 {
 public:
+#pragma region constants
+	static const uint32_t SHP_ACT_MUSIC = id("ScenarioActMusicShopper");
+#pragma endregion Asset Browser Shopper IDs
+
 	AddReplacerMusic();
 	~AddReplacerMusic();
 
