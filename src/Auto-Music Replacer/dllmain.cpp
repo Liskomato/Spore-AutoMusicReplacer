@@ -8,6 +8,8 @@
 
 
 MicroStorageClient* MSclient = nullptr;
+AddReplacerMusic* addReplacerCheat = nullptr;
+RemoveReplacerMusic* removeReplacerCheat = nullptr;
 eastl::map<uint32_t, uint32_t> alternateMusicIDs; // first uint32 is for act index, second for actual music ID
 
 bool active = true;
@@ -23,9 +25,11 @@ void Initialize()
 	//  - Change materials
 
 	MSclient = new MicroStorageClient("AutoMusicReplacer");
+	addReplacerCheat = new AddReplacerMusic();
+	removeReplacerCheat = new RemoveReplacerMusic();
 	CheatManager.AddCheat("musicreplacer",new MusicReplacerEnabled());
-	CheatManager.AddCheat("addreplacermusic", new AddReplacerMusic());
-	CheatManager.AddCheat("removereplacermusic", new RemoveReplacerMusic());
+	CheatManager.AddCheat("addreplacermusic", addReplacerCheat);
+	CheatManager.AddCheat("removereplacermusic", removeReplacerCheat);
 }
 
 member_detour(cScenarioPlayMode_Initialize_dtr, Simulator::cScenarioPlayMode, void()) {
@@ -76,9 +80,10 @@ member_detour(cScenarioPlayMode_SetCurrentAct_dtr, Simulator::cScenarioPlayMode,
 static_detour(AudioSystem_PlayActMusic_dtr, void(uint32_t, Audio::AudioTrack)) {
 
 	void detoured(uint32_t soundID, Audio::AudioTrack track) {
-		if (active && alternateMusicIDs.find(ScenarioMode.GetPlayMode()->mCurrentActIndex) != alternateMusicIDs.end())
+		auto currentAct = ScenarioMode.GetPlayMode()->mCurrentActIndex;
+		if (active && alternateMusicIDs.find(currentAct) != alternateMusicIDs.end())
 		{
-			original_function(alternateMusicIDs[ScenarioMode.GetPlayMode()->mCurrentActIndex], track);
+			original_function(alternateMusicIDs[currentAct], track);
 
 		}
 		else {
@@ -93,6 +98,14 @@ void Dispose()
 	if (MSclient) {
 		delete MSclient;
 		MSclient = nullptr;
+	}
+	if (addReplacerCheat) {
+		delete addReplacerCheat;
+		addReplacerCheat = nullptr;
+	}
+	if (removeReplacerCheat) {
+		delete removeReplacerCheat;
+		removeReplacerCheat = nullptr;
 	}
 }
 
