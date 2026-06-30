@@ -77,7 +77,7 @@ bool MusicReplacerEnabled::SaveData() {
 	PropertyListPtr propList = new App::PropertyList();
 	FileStreamPtr stream = new IO::FileStream(GetFilePath().c_str());
 
-	propList->SetProperty(id("MusicReplacerActive"), &App::Property().SetValueBool(active));
+	propList->SetProperty(PRP_MUSIC_REPLACER_ACTIVE, &App::Property().SetValueBool(active));
 	
 	stream->Open(IO::AccessFlags::ReadWrite, IO::CD::CreateAlways);
 	bool check = propList->Write(stream.get());
@@ -94,8 +94,8 @@ bool MusicReplacerEnabled::LoadData() {
 		stream->Close();
 	}
 
-	if (propList->HasProperty(id("MusicReplacerActive"))) {
-		App::Property::GetBool(propList.get(), id("MusicReplacerActive"), active);
+	if (propList->HasProperty(PRP_MUSIC_REPLACER_ACTIVE)) {
+		App::Property::GetBool(propList.get(), PRP_MUSIC_REPLACER_ACTIVE, active);
 		return true;
 	}
 	else {

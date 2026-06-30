@@ -24,7 +24,7 @@ void Initialize()
 	//  - Add new space tools
 	//  - Change materials
 
-	MSclient = new MicroStorageClient("AutoMusicReplacer");
+	MSclient = new MicroStorageClient(MSR_MOD_ID);
 	addReplacerCheat = new AddReplacerMusic();
 	removeReplacerCheat = new RemoveReplacerMusic();
 	CheatManager.AddCheat("musicreplacer",new MusicReplacerEnabled());
@@ -49,16 +49,14 @@ member_detour(cScenarioPlayMode_Initialize_dtr, Simulator::cScenarioPlayMode, vo
 
 				Simulator::cScenarioAct* actP = &act;
 
-				IO::SharedPointer* sharedPtr = new IO::SharedPointer(0, nullptr);
-				MemoryStreamPtr memoryStream = new IO::MemoryStream(sharedPtr, 0);
-				memoryStream->SetData(sharedPtr, 0);
+				MemoryStreamPtr memoryStream = new IO::MemoryStream(nullptr, 0);
 				memoryStream->SetOption(IO::MemoryStream::kOptionResizeEnabled, 1);
 
-				if (MSclient->Read(actP, id("AMR-ReplacingMusicId"), memoryStream.get())) {
+				if (MSclient->Read(actP, MSR_REPLACING_MUSIC_ID, memoryStream.get())) {
 					PropertyListPtr propList = new App::PropertyList();
 					propList->Read(memoryStream.get());
-					if (propList->HasProperty(0xb6878619)) {
-						App::Property::GetUInt32(propList.get(), 0xb6878619, alternateMusicId);
+					if (propList->HasProperty(PRP_ADVENTURE_MUSIC_ID)) {
+						App::Property::GetUInt32(propList.get(), PRP_ADVENTURE_MUSIC_ID, alternateMusicId);
 						alternateMusicIDs.emplace(i, alternateMusicId);
 					}
 				}

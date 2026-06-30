@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RemoveReplacerMusic.h"
 #include "globals.h"
-#include "MicroStorageAPI.h"
+#include <MicroStorageAPI.h>
 
 RemoveReplacerMusic::RemoveReplacerMusic()
 {
@@ -24,10 +24,10 @@ void RemoveReplacerMusic::ParseLine(const ArgScript::Line& line)
 		auto res = ScenarioMode.GetResource();
 		Simulator::cScenarioAct* act = &res->mActs[data->GetEditModeActIndex()];
 		data->StartHistoryEntry();
-		MSclient->Remove(act,id("AMR-ReplacingMusicId"));
+		MSclient->Remove(act, MSR_REPLACING_MUSIC_ID);
 		data->CommitHistoryEntry();
-		Audio::PlayAudio(id("editor_trash"));
-		App::ConsolePrintF("Removed music replacement from act %d",data->GetEditModeActIndex()+1);
+		Audio::PlayAudio(SND_SKINNING_REMOVE);
+		App::ConsolePrintF("Removed music replacement from act %d", data->GetEditModeActIndex()+1);
 
 	}
 	else {

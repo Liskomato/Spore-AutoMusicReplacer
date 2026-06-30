@@ -21,7 +21,7 @@ void AddReplacerMusic::ParseLine(const ArgScript::Line& line)
 	if (Simulator::GetGameModeID() == GameModeIDs::kScenarioMode
 		&& ScenarioMode.GetMode() == App::cScenarioMode::Mode::EditMode) {
 		Sporepedia::ShopperRequest request(this);
-		request.shopperID = id("ScenarioActMusicShopper");
+		request.shopperID = SHP_ACT_MUSIC;
 		Sporepedia::ShopperRequest::Show(request);
 	}
 	else {
@@ -45,18 +45,16 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 
 		uint32_t adventureMusicId;
 
-		if (App::Property::GetUInt32(propListOld.get(), 0xb6878619,adventureMusicId)) {
+		if (App::Property::GetUInt32(propListOld.get(), PRP_ADVENTURE_MUSIC_ID, adventureMusicId)) {
 
 			
 			PropertyListPtr propList = new App::PropertyList();
 
-			IO::SharedPointer* sharedPtr = new IO::SharedPointer(0, nullptr);
-			MemoryStreamPtr memoryStream = new IO::MemoryStream(sharedPtr, 0);
-			memoryStream->SetData(sharedPtr, 0);
+			MemoryStreamPtr memoryStream = new IO::MemoryStream(nullptr, 0);
 			memoryStream->SetOption(IO::MemoryStream::kOptionResizeEnabled, 1);
 			
 
-			propList->SetProperty(0xb6878619, &App::Property().SetValueUInt32(adventureMusicId));
+			propList->SetProperty(PRP_ADVENTURE_MUSIC_ID, &App::Property().SetValueUInt32(adventureMusicId));
 
 
 			if (propList->Write(memoryStream.get())) {
@@ -64,9 +62,9 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 				auto data = ScenarioMode.GetData();
 				Simulator::cScenarioAct* currentAct = &scnres->mActs[data->GetEditModeActIndex()];
 				data->StartHistoryEntry();
-				MSclient->Write(memoryStream.get(),id("AMR-ReplacingMusicId"),currentAct);
+				MSclient->Write(memoryStream.get(), MSR_REPLACING_MUSIC_ID, currentAct);
 				data->CommitHistoryEntry();
-				App::ConsolePrintF("Stored alternate music ID %#010x to act %d",adventureMusicId,data->GetEditModeActIndex() + 1);
+				App::ConsolePrintF("Stored alternate music ID %#010x to act %d", adventureMusicId, data->GetEditModeActIndex() + 1);
 			}
 		}
 	}

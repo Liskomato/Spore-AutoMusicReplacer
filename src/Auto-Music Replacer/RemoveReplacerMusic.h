@@ -6,6 +6,10 @@ class RemoveReplacerMusic
 	: public ArgScript::ICommand
 {
 public:
+#pragma region constants
+	static const uint32_t SND_SKINNING_REMOVE = id("editor_trash");
+#pragma endregion Sound IDs
+
 	RemoveReplacerMusic();
 	~RemoveReplacerMusic();
 
