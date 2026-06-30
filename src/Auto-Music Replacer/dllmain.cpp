@@ -24,7 +24,7 @@ void Initialize()
 	//  - Add new space tools
 	//  - Change materials
 
-	MSclient = new MicroStorageClient(MSR_MOD_ID);
+	MSclient = new MicroStorageClient(MSC_MOD_ID);
 	addReplacerCheat = new AddReplacerMusic();
 	removeReplacerCheat = new RemoveReplacerMusic();
 	CheatManager.AddCheat("musicreplacer",new MusicReplacerEnabled());
