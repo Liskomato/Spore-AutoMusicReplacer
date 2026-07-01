@@ -3,6 +3,8 @@
 #include "MusicReplacerEnabled.h"
 #include "AddReplacerMusic.h"
 #include "RemoveReplacerMusic.h"
+#include "AddReplacerCastAudio.h"
+#include "RemoveReplacerCastAudio.h"
 #include "globals.h"
 #include <MicroStorageAPI.h>
 
@@ -15,6 +17,8 @@ UILayoutPtr layoutActBar = nullptr;
 MicroStorageClient* MSclient = nullptr;
 AddReplacerMusic* addReplacerCheat = nullptr;
 RemoveReplacerMusic* removeReplacerCheat = nullptr;
+AddReplacerCastAudioPtr addReplacerCastAudio = nullptr;
+RemoveReplacerCastAudioPtr removeReplacerCastAudio = nullptr;
 eastl::map<uint32_t, uint32_t> alternateMusicIDs; // first uint32 is for act index, second for actual music ID
 
 bool active = true;
@@ -150,6 +154,9 @@ void Dispose()
 	}
 	layoutBehaviour = nullptr;
 	layoutActBar = nullptr;
+
+	addReplacerCastAudio = nullptr;
+	removeReplacerCastAudio = nullptr;
 }
 
 void AttachDetours()

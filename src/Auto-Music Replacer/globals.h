@@ -3,6 +3,8 @@
 class MicroStorageClient;
 class AddReplacerMusic;
 class RemoveReplacerMusic;
+class AddReplacerCastAudio;
+class RemoveReplacerCastAudio;
 
 extern MicroStorageClient* MSclient;
 
@@ -12,6 +14,9 @@ extern RemoveReplacerMusic* removeReplacerCheat;
 
 extern UILayoutPtr layoutBehaviour;
 extern UILayoutPtr layoutActBar;
+
+extern AddReplacerCastAudioPtr addReplacerCastAudio;
+extern RemoveReplacerCastAudioPtr removeReplacerCastAudio;
 
 extern bool active;
 
