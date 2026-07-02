@@ -15,10 +15,10 @@ public:
 	static const uint32_t SHP_ACT_MUSIC = id("ScenarioActMusicShopper");
 #pragma endregion Asset Browser Shopper IDs
 
-	IWindow* container;
-	IWindow* emptyButton; // IButton
-	IWindow* filledButton; // IButton
-	SporeTooltipWinProc* tooltip;
+	IWindow* container = nullptr;
+	IWindow* emptyButton = nullptr; // IButton
+	IWindow* filledButton = nullptr; // IButton
+	SporeTooltipWinProc* tooltip = nullptr;
 
 	AddReplacerMusic();
 	~AddReplacerMusic();

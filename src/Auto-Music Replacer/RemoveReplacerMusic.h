@@ -27,12 +27,13 @@ public:
 	bool HandleUIMessage(IWindow* pWindow, const Message& message) override;
 
 	void InitializeUI(IWindow* window, UILayout* layout);
+	void RemoveActReplacementMusic(Simulator::cScenarioData* data);
 	
 	// Returns a string containing the description. If mode != DescriptionMode::Basic, return a more elaborated description
 	const char* GetDescription(ArgScript::DescriptionMode mode) const override;
 
 private:
-	IWindow* container;
-	IWindow* deleteButton; // IButton
+	IWindow* container = nullptr;
+	IWindow* deleteButton = nullptr; // IButton
 };
 

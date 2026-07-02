@@ -107,6 +107,7 @@ void AddReplacerMusic::InitializeUI(IWindow* window, UILayout* layout) {
 	container = layout->FindWindowByID(CONTROL_ID_AMR_BUTTON_CONTAINER);
 	if (!container) return;
 
+	if (container->GetParent() != window)
 	window->AddWindow(container);
 
 	emptyButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_EMPTY);

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RemoveReplacerMusic.h"
+#include "AddReplacerMusic.h"
 #include "globals.h"
 #include <MicroStorageAPI.h>
 
@@ -21,13 +22,8 @@ void RemoveReplacerMusic::ParseLine(const ArgScript::Line& line)
 	if (Simulator::GetGameModeID() == GameModeIDs::kScenarioMode
 		&& ScenarioMode.GetMode() == App::cScenarioMode::Mode::EditMode) {
 		auto data = ScenarioMode.GetData();
-		auto res = ScenarioMode.GetResource();
-		Simulator::cScenarioAct* act = &res->mActs[data->GetEditModeActIndex()];
-		data->StartHistoryEntry();
-		MSclient->Remove(act, MSR_REPLACING_MUSIC_ID);
-		data->CommitHistoryEntry();
-		Audio::PlayAudio(SND_SKINNING_REMOVE);
-		App::ConsolePrintF("Removed music replacement from act %d", data->GetEditModeActIndex()+1);
+		RemoveActReplacementMusic(data);
+		App::ConsolePrintF("Removed music replacement from act %d", data->GetEditModeActIndex() + 1);
 
 	}
 	else {
@@ -51,11 +47,37 @@ void* RemoveReplacerMusic::Cast(uint32_t type) const {
 }
 
 bool RemoveReplacerMusic::HandleUIMessage(UTFWin::IWindow* pWindow, const UTFWin::Message& message) {
-
+	if (message.eventType != kMsgButtonClick)
+		return false;
+	if (pWindow->GetControlID() != CONTROL_ID_AMR_BUTTON_DELETE)
+		return false;
+	auto data = ScenarioMode.GetData();
+	RemoveActReplacementMusic(data);
+	return true;
 }
 
 void RemoveReplacerMusic::InitializeUI(IWindow* window, UILayout* layout) {
+	container = layout->FindWindowByID(CONTROL_ID_AMR_BUTTON_CONTAINER);
+	if (!container) return;
 
+	if (container->GetParent() != window)
+		window->AddWindow(container);
+
+	deleteButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_DELETE);
+	if (deleteButton) {
+		deleteButton->AddWinProc(this);
+	}
+}
+
+void RemoveReplacerMusic::RemoveActReplacementMusic(Simulator::cScenarioData* data) {
+	auto& res = data->mpResource;
+	Simulator::cScenarioAct* act = &res->mActs[data->GetEditModeActIndex()];
+	data->StartHistoryEntry();
+	MSclient->Remove(act, MSR_REPLACING_MUSIC_ID);
+	data->CommitHistoryEntry();
+	Audio::PlayAudio(SND_SKINNING_REMOVE);
+	if (addReplacerCheat)
+	addReplacerCheat->UpdateUI(false);
 }
 
 const char* RemoveReplacerMusic::GetDescription(ArgScript::DescriptionMode mode) const
