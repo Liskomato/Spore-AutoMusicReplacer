@@ -54,6 +54,10 @@ bool RemoveReplacerMusic::HandleUIMessage(UTFWin::IWindow* pWindow, const UTFWin
 
 }
 
+void RemoveReplacerMusic::InitializeUI(IWindow* window, UILayout* layout) {
+
+}
+
 const char* RemoveReplacerMusic::GetDescription(ArgScript::DescriptionMode mode) const
 {
 	if (mode == ArgScript::DescriptionMode::Basic) {

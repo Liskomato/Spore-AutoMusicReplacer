@@ -1,0 +1,8 @@
+key parent AssetBrowserConfig!ScenarioModeTemplate.prop
+texts sporepediaConfigCallToActionMessage
+	(sporepediaEP1!0x072925bc) "placeholder"
+end
+key sporepediaConfigFeedListID ScenarioFixedObjects
+key sporepediaConfigRootFilterID FixedObjectAudio
+key sporepediaConfigSelectedFeed ScenarioFixedObjects
+key sporepediaConfigSelectedFilterID FixedObjectAudio

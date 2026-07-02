@@ -10,10 +10,13 @@ using namespace UTFWin;
 class AddReplacerCastAudio 
 	: public IWinProc
 	, public DefaultRefCounted
+	, public Sporepedia::IShopperListener
 {
 public:
 	static const uint32_t TYPE = id("AddReplacerCastAudio");
-	
+#pragma region constants
+	static const uint32_t SHP_FIXEDOBJECTAUDIO_AMR = id("ScenarioFixedObjectAudioShopper_AutoMusicReplacer");
+#pragma endregion Asset Browser Shopper IDs
 	AddReplacerCastAudio();
 	~AddReplacerCastAudio();
 
@@ -24,5 +27,13 @@ public:
 	int GetEventFlags() const override;
 	// This is the function you have to implement, called when a window you added this winproc to received an event
 	bool HandleUIMessage(IWindow* pWindow, const Message& message) override;
+	void OnShopperAccept(const ResourceKey& selection) override;
+	void InitializeUI(IWindow* window,UILayout* layout, Simulator::cScenarioClass* target, int index);
+private:
+	IWindow* container = nullptr;
+	IWindow* emptyButton = nullptr; // IButton
+	IWindow* filledButton = nullptr; // IButton
 	
+	Simulator::cScenarioClass* target = nullptr;
+	int targetIndex = -1;
 };

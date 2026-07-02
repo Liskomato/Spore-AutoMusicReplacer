@@ -44,7 +44,19 @@ void* AddReplacerMusic::Cast(uint32_t type) const {
 }
 
 bool AddReplacerMusic::HandleUIMessage(UTFWin::IWindow* pWindow, const UTFWin::Message& message) {
-
+	if (message.eventType != kMsgButtonClick) {
+		return false;
+	}
+	Sporepedia::ShopperRequest request(this);
+	request.shopperID = SHP_ACT_MUSIC;
+	switch (pWindow->GetControlID()) {
+	case CONTROL_ID_AMR_BUTTON_EMPTY:
+	case CONTROL_ID_AMR_BUTTON_FILLED:
+		Sporepedia::ShopperRequest::Show(request);
+		return true;
+	default:
+		return false;
+	}
 }
 
 void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
@@ -62,8 +74,9 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 		propListOld->Read(stream);
 
 		uint32_t adventureMusicId;
+		LocalizedString name;
 
-		if (App::Property::GetUInt32(propListOld.get(), PRP_ADVENTURE_MUSIC_ID, adventureMusicId)) {
+		if (App::Property::GetUInt32(propListOld.get(), PRP_ADVENTURE_MUSIC_ID, adventureMusicId) && App::Property::GetText(propListOld.get(),PROP_SPOREPEDIA_NAME,name)) {
 
 			
 			PropertyListPtr propList = new App::PropertyList();
@@ -73,7 +86,7 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 			
 
 			propList->SetProperty(PRP_ADVENTURE_MUSIC_ID, &App::Property().SetValueUInt32(adventureMusicId));
-
+			propList->SetProperty(PROP_SPOREPEDIA_NAME, &App::Property().SetValueString16(name.GetText()));
 
 			if (propList->Write(memoryStream.get())) {
 				auto scnres = ScenarioMode.GetResource();
@@ -83,10 +96,45 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 				MSclient->Write(memoryStream.get(), MSR_REPLACING_MUSIC_ID, currentAct);
 				data->CommitHistoryEntry();
 				App::ConsolePrintF("Stored alternate music ID %#010x to act %d", adventureMusicId, data->GetEditModeActIndex() + 1);
+				UpdateUI(true,name.GetText());
 			}
 		}
 	}
 	
+}
+
+void AddReplacerMusic::InitializeUI(IWindow* window, UILayout* layout) {
+	container = layout->FindWindowByID(CONTROL_ID_AMR_BUTTON_CONTAINER);
+	if (!container) return;
+
+	window->AddWindow(container);
+
+	emptyButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_EMPTY);
+	if (emptyButton) {
+		emptyButton->AddWinProc(this);
+	}
+
+	filledButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_FILLED);
+	if (filledButton) {
+		filledButton->AddWinProc(this);
+		IWinProc* tooltip1 = filledButton->GetNextWinProc();
+		if (tooltip1 != nullptr) {
+			IWinProc* tooltip2 = filledButton->GetNextWinProc(tooltip1);
+			if (tooltip2 != nullptr && tooltip2->TYPE == SporeTooltipWinProc::TYPE)
+			tooltip = object_cast<SporeTooltipWinProc>(tooltip1);
+		}
+	}
+
+}
+
+void AddReplacerMusic::UpdateUI(bool isFilled, string16 tooltipText = u"") {
+	if (emptyButton && filledButton) {
+		emptyButton->SetVisible(!isFilled);
+		filledButton->SetVisible(isFilled);
+		if (tooltip != nullptr) {
+			tooltip->mText = tooltipText;
+		}
+	}
 }
 
 const char* AddReplacerMusic::GetDescription(ArgScript::DescriptionMode mode) const

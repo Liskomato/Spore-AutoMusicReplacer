@@ -2,6 +2,8 @@
 
 #include <Spore\BasicIncludes.h>
 
+using namespace UTFWin;
+
 class RemoveReplacerMusic 
 	: public ArgScript::ICommand
 	, public UTFWin::IWinProc
@@ -22,9 +24,15 @@ public:
 	int Release() override;
 	void* Cast(uint32_t type) const override;
 	int GetEventFlags() const override;
-	bool HandleUIMessage(UTFWin::IWindow* pWindow, const UTFWin::Message& message) override;
+	bool HandleUIMessage(IWindow* pWindow, const Message& message) override;
+
+	void InitializeUI(IWindow* window, UILayout* layout);
 	
 	// Returns a string containing the description. If mode != DescriptionMode::Basic, return a more elaborated description
 	const char* GetDescription(ArgScript::DescriptionMode mode) const override;
+
+private:
+	IWindow* container;
+	IWindow* deleteButton; // IButton
 };
 

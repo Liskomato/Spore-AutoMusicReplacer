@@ -24,5 +24,12 @@ public:
 	int GetEventFlags() const override;
 	// This is the function you have to implement, called when a window you added this winproc to received an event
 	bool HandleUIMessage(IWindow* pWindow, const Message& message) override;
+	void InitializeUI(IWindow* window,UILayout* layout, Simulator::cScenarioClass* target, int index);
 	
+private:
+	IWindow* container = nullptr;
+	IWindow* deleteButton = nullptr; //IButton
+
+	Simulator::cScenarioClass* target = nullptr;
+	int targetIndex = -1;
 };

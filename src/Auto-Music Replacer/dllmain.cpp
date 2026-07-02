@@ -17,8 +17,8 @@ UILayoutPtr layoutActBar = nullptr;
 MicroStorageClient* MSclient = nullptr;
 AddReplacerMusic* addReplacerCheat = nullptr;
 RemoveReplacerMusic* removeReplacerCheat = nullptr;
-AddReplacerCastAudioPtr addReplacerCastAudio = nullptr;
-RemoveReplacerCastAudioPtr removeReplacerCastAudio = nullptr;
+AddReplacerCastAudio* addReplacerCastAudio = nullptr;
+RemoveReplacerCastAudio* removeReplacerCastAudio = nullptr;
 eastl::map<uint32_t, uint32_t> alternateMusicIDs; // first uint32 is for act index, second for actual music ID
 
 bool active = true;
@@ -36,11 +36,17 @@ void Initialize()
 	MSclient = new MicroStorageClient(MSC_MOD_ID);
 	addReplacerCheat = new AddReplacerMusic();
 	removeReplacerCheat = new RemoveReplacerMusic();
+	addReplacerCastAudio = new AddReplacerCastAudio();
+	removeReplacerCastAudio = new RemoveReplacerCastAudio();
 	CheatManager.AddCheat("musicreplacer",new MusicReplacerEnabled());
 	CheatManager.AddCheat("addreplacermusic", addReplacerCheat);
 	CheatManager.AddCheat("removereplacermusic", removeReplacerCheat);
 }
-
+/// 
+/// Detour code adapted from Adventure Cast Thumbnails mod by 0KepOnline. Credit to him for the original code.
+/// 
+/// Source code: https://github.com/0KepOnline/SPOREMod_AdventureCastThumbnails/
+/// 
 member_detour(cScenarioEditModeScriptUI_ShowBehaviorEditUI, cScenarioEditModeScriptUI, void())
 {
 	void detoured() {
@@ -62,12 +68,31 @@ member_detour(cScenarioEditModeScriptUI_ShowBehaviorEditUI, cScenarioEditModeScr
 		if (!behaviorEditUIWin)
 			return;
 
+		IWindow* castPreviewWin = behaviorEditUIWin->
+			FindWindowByID(CONTROL_ID_CAST_PREVIEW);
+		if (!castPreviewWin)
+			return;
+
+		if (!layoutBehaviour->LoadByID(SPUI_AMR_ACTMUSICBUTTON)) {
+			return;
+		}
+
+		addReplacerCastAudio->InitializeUI(castPreviewWin,layoutBehaviour.get(), scenarioClass, index);
+		removeReplacerCastAudio->InitializeUI(castPreviewWin,layoutBehaviour.get(), scenarioClass, index);
+
 	}
 };
 
 member_detour(ActEditorBar_load, ActEditorBar, uint32_t* (int*)) {
 	uint32_t* detoured(int* p1) {
 		uint32_t* r = original_function(this, p1);
+
+		UILayoutPtr layout = (UILayout*)field(this, 0xc);
+		IWindowPtr actBarMusicDescription = layout->FindWindowByID(CONTROL_ID_ACTBAR_DESCRIPTION_AND_MUSIC);
+		if (actBarMusicDescription && layoutActBar->LoadByID(SPUI_AMR_ACTMUSICBUTTON)) {
+			addReplacerCheat->InitializeUI(actBarMusicDescription.get(), layoutActBar.get());
+			removeReplacerCheat->InitializeUI(actBarMusicDescription.get(),layoutActBar.get());
+		}
 		return r;
 	}
 };
@@ -154,9 +179,14 @@ void Dispose()
 	}
 	layoutBehaviour = nullptr;
 	layoutActBar = nullptr;
-
-	addReplacerCastAudio = nullptr;
-	removeReplacerCastAudio = nullptr;
+	if (addReplacerCastAudio) {
+		delete addReplacerCastAudio;
+		addReplacerCastAudio = nullptr;
+	}
+	if (removeReplacerCastAudio) {
+		delete removeReplacerCastAudio;
+		removeReplacerCastAudio = nullptr;
+	}
 }
 
 void AttachDetours()

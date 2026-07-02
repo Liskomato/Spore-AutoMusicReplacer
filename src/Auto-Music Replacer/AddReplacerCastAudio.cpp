@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "globals.h"
 #include "AddReplacerCastAudio.h"
 
 AddReplacerCastAudio::AddReplacerCastAudio()
@@ -43,7 +44,23 @@ int AddReplacerCastAudio::GetEventFlags() const
 // checking what kind of message was sent...
 bool AddReplacerCastAudio::HandleUIMessage(IWindow* window, const Message& message)
 {
-	
+	if (message.eventType != kMsgButtonClick || !target) {
+		return false;
+	}
+	Sporepedia::ShopperRequest request(this);
+	request.shopperID = SHP_FIXEDOBJECTAUDIO_AMR;
+	switch (window->GetControlID()) {
+		case CONTROL_ID_AMR_BUTTON_EMPTY:
+		case CONTROL_ID_AMR_BUTTON_FILLED:
+			Sporepedia::ShopperRequest::Show(request);
+			return true;
+		default:
+			return false;
+	}
 	// Return true if the message was handled, and therefore no other window procedure should receive it.
 	return false;
+}
+
+void AddReplacerCastAudio::OnShopperAccept(const ResourceKey& selection) {
+
 }
