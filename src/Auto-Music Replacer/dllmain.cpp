@@ -51,14 +51,14 @@ member_detour(cScenarioEditModeScriptUI_ShowBehaviorEditUI, cScenarioEditModeScr
 		if (!scenarioData)
 			return;
 
-		uint32_t index = *(uint32_t*)(thisPtr + 0x20);
+		uint32_t index = (uint32_t)field(thisPtr, 0x20);
 		Simulator::cScenarioClass* scenarioClass = scenarioData->GetClass(index);
 		if (!scenarioClass
 			|| Simulator::cScenarioClass::GetObjectType(*(ResourceKey*)scenarioClass) !=
 			Simulator::ScenarioObjectType::ScenarioFixedObjectAudio)
 			return;
 
-		UTFWin::IWindow* behaviorEditUIWin = *(UTFWin::IWindow**)(thisPtr + 0x18);
+		UTFWin::IWindow* behaviorEditUIWin = (UTFWin::IWindow*)field(thisPtr, 0x18);
 		if (!behaviorEditUIWin)
 			return;
 
