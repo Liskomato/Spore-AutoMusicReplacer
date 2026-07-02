@@ -64,3 +64,11 @@ bool AddReplacerCastAudio::HandleUIMessage(IWindow* window, const Message& messa
 void AddReplacerCastAudio::OnShopperAccept(const ResourceKey& selection) {
 
 }
+
+void AddReplacerCastAudio::InitializeUI(IWindow* window, UILayout* layout,Simulator::cScenarioClass* target, int index) {
+
+}
+
+void AddReplacerCastAudio::UpdateUI(bool isFilled, string16 tooltipText = u"") {
+
+}

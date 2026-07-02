@@ -15,10 +15,6 @@ public:
 	static const uint32_t SHP_ACT_MUSIC = id("ScenarioActMusicShopper");
 #pragma endregion Asset Browser Shopper IDs
 
-	IWindow* container = nullptr;
-	IWindow* emptyButton = nullptr; // IButton
-	IWindow* filledButton = nullptr; // IButton
-	SporeTooltipWinProc* tooltip = nullptr;
 
 	AddReplacerMusic();
 	~AddReplacerMusic();
@@ -39,5 +35,10 @@ public:
 	
 	// Returns a string containing the description. If mode != DescriptionMode::Basic, return a more elaborated description
 	const char* GetDescription(ArgScript::DescriptionMode mode) const override;
+private:
+	IWindow* container = nullptr;
+	IWindow* emptyButton = nullptr; // IButton
+	IWindow* filledButton = nullptr; // IButton
+	SporeTooltipWinProc* tooltip = nullptr;
 };
 

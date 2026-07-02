@@ -29,10 +29,12 @@ public:
 	bool HandleUIMessage(IWindow* pWindow, const Message& message) override;
 	void OnShopperAccept(const ResourceKey& selection) override;
 	void InitializeUI(IWindow* window,UILayout* layout, Simulator::cScenarioClass* target, int index);
+	void UpdateUI(bool isFilled, string16 tooltipText = u"");
 private:
 	IWindow* container = nullptr;
 	IWindow* emptyButton = nullptr; // IButton
 	IWindow* filledButton = nullptr; // IButton
+	SporeTooltipWinProc* tooltip = nullptr;
 	
 	Simulator::cScenarioClass* target = nullptr;
 	int targetIndex = -1;

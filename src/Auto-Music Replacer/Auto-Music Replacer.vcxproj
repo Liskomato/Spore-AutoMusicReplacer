@@ -102,12 +102,20 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddReplacerCastAudio.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="AddReplacerMusic.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="globals.h" />
     <ClInclude Include="MusicReplacerEnabled.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="RemoveReplacerCastAudio.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -119,6 +127,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddReplacerCastAudio.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="AddReplacerMusic.cpp">
       <SubType>
       </SubType>
@@ -132,6 +144,10 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MusicReplacerEnabled.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="RemoveReplacerCastAudio.cpp">
       <SubType>
       </SubType>
     </ClCompile>

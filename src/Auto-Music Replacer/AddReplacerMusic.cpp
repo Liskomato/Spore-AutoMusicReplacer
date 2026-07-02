@@ -111,10 +111,10 @@ void AddReplacerMusic::InitializeUI(IWindow* window, UILayout* layout) {
 	window->AddWindow(container);
 
 	emptyButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_EMPTY);
-	if (emptyButton) {
-		emptyButton->AddWinProc(this);
+	if (!emptyButton) {
+		return;
 	}
-
+	emptyButton->AddWinProc(this);
 	filledButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_FILLED);
 	if (filledButton) {
 		filledButton->AddWinProc(this);

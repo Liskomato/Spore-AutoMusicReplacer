@@ -31,6 +31,12 @@
     <ClInclude Include="MusicReplacerEnabled.h">
       <Filter>Auto-Music Replacer</Filter>
     </ClInclude>
+    <ClInclude Include="AddReplacerCastAudio.h">
+      <Filter>Auto-Music Replacer</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoveReplacerCastAudio.h">
+      <Filter>Auto-Music Replacer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -46,6 +52,12 @@
       <Filter>Auto-Music Replacer</Filter>
     </ClCompile>
     <ClCompile Include="MusicReplacerEnabled.cpp">
+      <Filter>Auto-Music Replacer</Filter>
+    </ClCompile>
+    <ClCompile Include="AddReplacerCastAudio.cpp">
+      <Filter>Auto-Music Replacer</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoveReplacerCastAudio.cpp">
       <Filter>Auto-Music Replacer</Filter>
     </ClCompile>
   </ItemGroup>
