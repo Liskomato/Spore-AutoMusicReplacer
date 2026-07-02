@@ -100,6 +100,8 @@ member_detour(ActEditorBar_load, ActEditorBar, uint32_t* (int*)) {
 member_detour(cScenarioData_UpdateEditorAct, Simulator::cScenarioData, void(int, Simulator::cScenarioMarker*, int)) {
 	void detoured(int i1, Simulator::cScenarioMarker * markers, int i2) {
 		original_function(this, i1, markers, i2);
+		if (addReplacerCheat)
+		addReplacerCheat->CheckState();
 	}
 };
 

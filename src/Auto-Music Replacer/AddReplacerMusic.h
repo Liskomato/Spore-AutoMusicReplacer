@@ -32,6 +32,7 @@ public:
 
 	void InitializeUI(IWindow* window, UILayout* layout);
 	void UpdateUI(bool isFilled, string16 tooltipText = u"");
+	void CheckState();
 	
 	// Returns a string containing the description. If mode != DescriptionMode::Basic, return a more elaborated description
 	const char* GetDescription(ArgScript::DescriptionMode mode) const override;
@@ -39,6 +40,7 @@ private:
 	IWindow* container = nullptr;
 	IWindow* emptyButton = nullptr; // IButton
 	IWindow* filledButton = nullptr; // IButton
+	IWindow* deleteButton = nullptr; // IButton
 	SporeTooltipWinProc* tooltip = nullptr;
 };
 

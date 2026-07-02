@@ -76,7 +76,7 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 		uint32_t adventureMusicId;
 		LocalizedString name;
 
-		if (App::Property::GetUInt32(propListOld.get(), PRP_ADVENTURE_MUSIC_ID, adventureMusicId) && App::Property::GetText(propListOld.get(),PROP_SPOREPEDIA_NAME,name)) {
+		if (App::Property::GetUInt32(propListOld.get(), PRP_ADVENTURE_MUSIC_ID, adventureMusicId) && App::Property::GetText(propListOld.get(),PRP_SPOREPEDIA_NAME,name)) {
 
 			
 			PropertyListPtr propList = new App::PropertyList();
@@ -86,7 +86,7 @@ void AddReplacerMusic::OnShopperAccept(const ResourceKey& selection) {
 			
 
 			propList->SetProperty(PRP_ADVENTURE_MUSIC_ID, &App::Property().SetValueUInt32(adventureMusicId));
-			propList->SetProperty(PROP_SPOREPEDIA_NAME, &App::Property().SetValueString16(name.GetText()));
+			propList->SetProperty(PRP_SPOREPEDIA_NAME, &App::Property().SetValueString16(name.GetText()));
 
 			if (propList->Write(memoryStream.get())) {
 				auto scnres = ScenarioMode.GetResource();
@@ -126,14 +126,76 @@ void AddReplacerMusic::InitializeUI(IWindow* window, UILayout* layout) {
 		}
 	}
 
+	deleteButton = container->FindWindowByID(CONTROL_ID_AMR_BUTTON_DELETE);
+
+	CheckState();
 }
 
 void AddReplacerMusic::UpdateUI(bool isFilled, string16 tooltipText = u"") {
 	if (emptyButton && filledButton) {
 		emptyButton->SetVisible(!isFilled);
 		filledButton->SetVisible(isFilled);
+		deleteButton->SetVisible(isFilled);
 		if (tooltip != nullptr) {
 			tooltip->mText = tooltipText;
+		}
+	}
+}
+
+void AddReplacerMusic::CheckState() {
+	if (Simulator::GetGameModeID() == GameModeIDs::kScenarioMode
+		&& ScenarioMode.GetMode() == App::cScenarioMode::Mode::EditMode) {
+		// Get scenario data and editor act index
+		auto data = ScenarioMode.GetData();
+		int currentActIndex = data->GetEditModeActIndex();
+
+		// MemoryStream for MicroStorage data to be read.
+		MemoryStreamPtr memoryStream = new IO::MemoryStream(nullptr, 0);
+		memoryStream->SetOption(IO::MemoryStream::kOptionResizeEnabled, 1);
+
+		// Get current act data with index
+		Simulator::cScenarioAct* act = &data->mpResource->mActs[currentActIndex];
+		
+		// Check if MicroStorage data exists.
+		if (MSclient->Read(act, MSR_REPLACING_MUSIC_ID, memoryStream.get())) {
+			// Read property list found from MS data.
+			PropertyListPtr MSR_PROPLIST = new App::PropertyList();
+			MSR_PROPLIST->Read(memoryStream.get());
+			uint32_t replacementAudioId;
+			string16 replacementAudioName;
+			if (App::Property::GetUInt32(MSR_PROPLIST.get(), PRP_ADVENTURE_MUSIC_ID, replacementAudioId)) {
+				// Use a fallback method if you don't find the name from MicroStorage record.
+				if (!App::Property::GetString16(MSR_PROPLIST.get(), PRP_SPOREPEDIA_NAME, replacementAudioName)) {
+					ResourceKey SPNameKey = ResourceKey(replacementAudioId,TypeIDs::prop,GroupIDs::PaletteItems);
+					Resource::Database* db = ResourceManager.FindRecord(SPNameKey, nullptr);
+					if (db) {
+						Resource::IRecord* record = nullptr;
+						db->OpenRecord(SPNameKey,&record);
+						IO::IStream* stream = record->GetStream();
+
+						PropertyListPtr propListOld = new App::PropertyList();
+						propListOld->Read(stream);
+
+						LocalizedString name;
+						if (App::Property::GetText(propListOld.get(), PRP_SPOREPEDIA_NAME, name)) {
+							replacementAudioName = name.GetText();
+						}
+						else {
+							replacementAudioName = u"<name not found>";
+						}
+					}
+					else {
+						replacementAudioName = u"<name not found>"; // Used if no name is found for the audio track.
+					}
+				}
+				UpdateUI(true, replacementAudioName);
+			}
+			else {
+				UpdateUI(false);
+			}
+		}
+		else {
+			UpdateUI(false);
 		}
 	}
 }

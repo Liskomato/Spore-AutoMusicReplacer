@@ -27,7 +27,7 @@ static const uint32_t MSR_REPLACING_MUSIC_ID = id("ReplacingMusicId");
 #pragma region constants
 static const uint32_t PRP_ADVENTURE_MUSIC_ID = id("soundId");
 static const uint32_t PRP_MUSIC_REPLACER_ACTIVE = id("MusicReplacerActive");
-static const uint32_t PROP_SPOREPEDIA_NAME = 0x071E9BD1;
+static const uint32_t PRP_SPOREPEDIA_NAME = 0x071E9BD1;
 #pragma endregion Property IDs
 
 #pragma region constants

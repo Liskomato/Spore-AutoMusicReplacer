@@ -34,6 +34,7 @@ private:
 	IWindow* container = nullptr;
 	IWindow* emptyButton = nullptr; // IButton
 	IWindow* filledButton = nullptr; // IButton
+	IWindow* deleteButton = nullptr; // IButton
 	SporeTooltipWinProc* tooltip = nullptr;
 	
 	Simulator::cScenarioClass* target = nullptr;
